@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yun.dao.RoleDao">
+    <delete id="deleteByRoleId">
+        delete from tbl_role_menu where role_id=#{roleId}
+    </delete>
+    <select id="findSelectMenu" resultType="com.yun.entity.Menu">
+        select t.* from (select * from tbl_role_menu where role_id=#{roleId}) as temp inner join tbl_menu as t on temp.menu_id=t.menu_id;
+    </select>
+    <select id="checkRoleName" resultType="com.yun.entity.Role">
+        select * from tbl_role where role_name=#{roleName}
+    </select>
+    <select id="checkRoleKey" resultType="com.yun.entity.Role">
+        select * from tbl_role where role_key=#{roleKey}
+    </select>
+
+</mapper>
+

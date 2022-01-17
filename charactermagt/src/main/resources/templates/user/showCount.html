@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>性格测试监控平台</title>
+    <link rel="stylesheet" href="/css/main.css">
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" type="text/css" href="/css/style2.0.css">
+    <script type="text/javascript" src="/js/jquery.min.js"></script>
+    <script>
+        $(function () {
+            $('.myscroll').myScroll({
+                speed: 60, //数值越大，速度越慢
+                rowHeight: 38 //li的高度
+            });
+        })
+
+    </script>
+</head>
+<body>
+<!--头部-->
+<header id="header">
+    <div class="header">
+        <h1 class="">性格测试监控平台</h1>
+    </div>
+</header>
+
+<!--内容-->
+<section id="data_content">
+
+    <div class="data_info">
+        <div class="info_1 fl">
+            <div class="text_1">
+            </div>
+        </div>
+        <div class="info_2 fl">
+            <div class="text_2">
+            </div>
+        </div>
+        <div class="info_3 fr">
+            <div class="text_2">
+                <div class="fl">
+                    <img src="/images/info_6.png" alt="">
+                    <div class="fl count">
+                        <p>测试总人数</p>
+                        <p class="conuts" th:text="${allCount}"></p>
+                    </div>
+                </div>
+                <div class="fl">
+                    <img src="/images/info_7.png" alt="">
+                    <div class="fl count">
+                        <p>今日测试人数</p>
+                        <p class="conuts" th:text="${todayCount}"></p>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <div class="data_content">
+        <!--左边-->
+        <div class="data_left fl">
+            <div class="left_top">
+                <!--/*左边第一部分*/-->
+                <div class="info public">
+                    <div class="min-title">
+                        <span>性格人数统计</span>
+                    </div>
+                    <div id="char4" style="width:100%;height: 100%;"></div>
+                    <div class="boxfoot"></div>
+                </div>
+                <!--左边第二部分-->
+                <div class="top_bottom public">
+                    <div class="min-title">
+                        <span>性格百分比统计</span>
+                    </div>
+                    <div id="echarts_1" style="width:100%;height: 100%;"></div>
+                    <div class="boxfoot"></div>
+                </div>
+                <div class="left_bottom public" hidden>
+                    <div id="chart_2" style="width:100%;height: 100%;"></div>
+                    <div class="boxfoot"></div>
+                </div>
+            </div>
+        </div>
+        <!--中间-->
+        <div class="data_c fl">
+            <div class="data_c_1">
+                <div id="contPar" class="contPar">
+                    <div id="page1"  style="z-index:1">
+                        <div class="title0">性格测试监控平台</div>
+                        <div class="title1">安全、准确、性格、分析、大数据</div>
+                        <div id="drag-container" style="z-index: 1">
+                            <div id="spin-container">
+
+                                <img alt="" class="infoBtn" src="/picture/page1_0.png">
+                                <img alt="" class="" src="/picture/page1_1.png">
+                                <img alt="" class="" src="/picture/page1_2.png">
+                                <img alt="" class="" src="/picture/page1_1.png">
+                                <img alt="" class="" src="/picture/page1_2.png">
+                            </div>
+                            <div id="ground"></div>
+                        </div>
+
+                        <img alt="" class="img3 png" src="/images/newdz.png" >
+                    </div>
+                </div>
+
+
+            </div>
+            <div class="data_c_2 public" hidden>
+                <div id="echart4" style="width: 100%;height: 100%;padding-top: 10px;"></div>
+                <div class="boxfoot"></div>
+            </div>
+        </div>
+        <!--右边-->
+        <div class="data_right fr">
+            <div class="right_top">
+                <!--/*右边第一部分*/-->
+                <div class="right_info public">
+                    <div class="min-title">
+                        <span>测试人员性格分析</span>
+                    </div>
+                    <div class="echart wenzi">
+                        <div class="gun">
+                            <span>姓名</span>
+                            <span>红色</span>
+                            <span>黄色</span>
+                            <span>蓝色</span>
+                            <span>绿色</span>
+                        </div>
+                        <div id="FontScroll" class="myscroll">
+                            <ul>
+                                <li th:each="tester:${allTesterResult}">
+                                    <div class="fontInner clearfix">
+                                        <span th:text="${tester.name}"></span>
+                                        <span th:text="${#numbers.formatPercent(tester.redCount/30.0,1,1)}" th:style="'color:'+${(tester.redCount>tester.yellowCount and tester.redCount>tester.blueCount and tester.redCount>tester.greenCount)?'red':'white'}"></span>
+                                        <span th:text="${#numbers.formatPercent(tester.yellowCount/30.0,1,1)}" th:style="'color:'+${(tester.yellowCount>tester.redCount and tester.yellowCount>tester.blueCount and tester.yellowCount>tester.greenCount)?'yellow':'white'}"></span>
+                                        <span th:text="${#numbers.formatPercent(tester.blueCount/30.0,1,1)}" th:style="'color:'+${(tester.blueCount>tester.yellowCount and tester.blueCount>tester.redCount and tester.blueCount>tester.greenCount)?'blue':'white'}"></span>
+                                        <span th:text="${#numbers.formatPercent(tester.greenCount/30.0,1,1)}" th:style="'color:'+${(tester.greenCount>tester.yellowCount and tester.greenCount>tester.blueCount and tester.greenCount>tester.redCount)?'#81FA51':'white'}"></span>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="boxfoot"></div>
+                </div>
+                <!--右边第二部分-->
+                <div class="right_content public">
+                    <div class="min-title">
+                        <span>每月参与测试的数量变化</span>
+                    </div>
+                    <div id="chart_3" style="width:100%;height: 100%;"></div>
+                    <div class="boxfoot"></div>
+                </div>
+                <!--右边第三部分-->
+                <div class="right_bottom public" hidden>
+                    <div id="echarts_2" style="width:100%;height: 100%;padding-top: 10px;"></div>
+                    <div class="boxfoot"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<a href="/user/toCount" target = "_blank" style="color: yellow">To Screen Display</a>
+<script src="/js/script.js"></script>
+<script type="text/javascript" src="/js/jquery-1.8.0.min.js"></script>
+<script src="/js/echarts.min.js"></script>
+<script src="/js/echart.js"></script>
+<script src="/js/fontscroll.js"></script>
+
+
+</body>
+</html>

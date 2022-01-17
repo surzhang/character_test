@@ -1,0 +1,171 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>答题页面</title>
+
+    <link rel="stylesheet" href="/layui/css/layui.css">
+    <script src="/layui/layui.js"></script>
+    <style>
+        html {
+            height: 100%;
+        }
+
+        body {
+            width: 100%;
+            height: 100%;
+            background-image: url("/image/f.png");
+            background-repeat: no-repeat;
+            background-size: 100% 100%;
+        }
+
+        .layui-container {
+            border-radius: 1rem;
+            width: 21rem;
+            height: 30rem;
+            background-color: rgba(253, 255, 253, 0.5);
+        }
+
+        .list {
+            width: 100%;
+            display: none;
+            margin: 1.25rem 0 0 0;
+        }
+
+        #id_1 {
+            display: block;
+        }
+
+        label {
+            font-weight: bold;
+        }
+
+        .layui-font-20 {
+            color: #67eeff;
+            font-size: 1.2rem;
+        }
+
+        .layui-input-block {
+            margin: 5px;
+            height: 5rem;
+            width: 20rem;
+            /*border: 1px solid red;*/
+        }
+
+        .layui-form {
+            margin-left: -10px;
+        }
+    </style>
+
+</head>
+<body>
+<div class="layui-container">
+    <div style="width:20rem; margin:1.2rem auto;">
+        <div style="margin-top: 1rem ; width:80%">
+            <div class="layui-progress layui-progress-big" lay-filter="demo" lay-showPercent="true">
+                <div class="layui-progress-bar" lay-percent="1%"></div>
+            </div>
+        </div>
+        <!--    保存测试者id-->
+        <input id="testerId" type="hidden" th:value="${testerId}">
+        <div th:each="question,loopStatus:${questionList}">
+            <div class="list" th:id="'id_'+${loopStatus.count}">
+                <label class="layui-font-20" th:text="${loopStatus.count}+'、'+${question.question}"></label>
+                <form class="layui-form">
+                    <div class="layui-form-item">
+                        <div class="layui-input-block">
+                            <input type="radio" lay-filter="qso" th:id="'A_'+${loopStatus.count}"
+                                   th:name="${question.id}"
+                                   value="A"
+                                   th:title="${question.optionA}">
+                        </div>
+                        <div class="layui-input-block">
+                            <input type="radio" lay-filter="qso" th:id="'B_'+${loopStatus.count}"
+                                   th:name="${question.id}"
+                                   value="B"
+                                   th:title="${question.optionB}">
+                        </div>
+                        <div class="layui-input-block">
+                            <input type="radio" lay-filter="qso" th:id="'C_'+${loopStatus.count}"
+                                   th:name="${question.id}"
+                                   value="C"
+                                   th:title="${question.optionC}">
+                        </div>
+                        <div class="layui-input-block">
+                            <input type="radio" lay-filter="qso" th:id="'D_'+${loopStatus.count}"
+                                   th:name="${question.id}"
+                                   value="D" th:title="${question.optionD}">
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+        </div>
+    </div>
+
+</div>
+
+
+<script>
+    layui.use(['layer', 'element', 'form', 'jquery'], function () {
+        var $ = layui.jquery,
+            layer = layui.layer,
+            element = layui.element,
+            form = layui.form;
+        var resultList = [];
+        form.on('radio(qso)', function (data) {
+            console.log(data.value);
+            console.log(data);
+            console.log(data.elem.name);
+            console.log(data.elem.id);
+            //定义一个result对象
+            var result = new Object();
+            //获取测试者id
+            result.testerId = $("#testerId").val();
+            //获取测试题id
+            result.questionId = data.elem.name;
+            //获取答案
+            result.answer = data.value;
+            //添加答案到resultList
+            resultList.push(result);
+            //获取题目编号（1-30）
+            let index = parseInt(data.elem.id.split("_")[1])
+            if (resultList.length == 30) {
+                alert("开始提交");
+                var resultListJson = JSON.stringify(resultList);
+                console.log(resultListJson)
+                //提交表单数据
+                $.ajax({
+                    url: "/testResult/saveBatchTestResult",
+                    type: "POST",
+                    dataType: "JSON",
+                    contentType: "application/json;charset=UTF-8",
+                    data: resultListJson,
+                    success: function (ret) {
+                        if (ret.code == 0) {
+                            //提交成功之后，怎么办?显示所有的测试题
+                            //window.location.href = "/test/toThanks";
+                            window.location.href = "/test/toShowResultAnalyse?testerId=" + result.testerId;
+                        } else {
+                            layer.msg(ret.msg, {icon: 5});
+                        }
+
+                    }
+                })
+            } else {
+                //隐藏当前的题目
+                $('#id_' + index).hide();
+                //显示下一题目
+                $('#id_' + (index + 1)).show();
+            }
+            //计算进度条
+            element.progress('demo', Math.ceil(index / 30 * 100) + '%');
+        });
+    });
+</script>
+
+</body>
+</html>

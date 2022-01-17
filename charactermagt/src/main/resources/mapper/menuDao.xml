@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yun.dao.MenuDao">
+
+    <select id="selectAllMenu" resultType="com.yun.entity.Menu">
+        select * from tbl_menu
+    </select>
+<!--    根据登录名查询所有菜单-->
+    <select id="selectAllMenuByName" resultType="com.yun.entity.Menu">
+        SELECT
+            DISTINCT(m.menu_id),m.menu_name,m.parent_id,m.order_num,m.url,m.menu_type,m.visible,m.perms,m.icon,m.create_by,m.create_time,m.update_by,m.update_time,m.remark,m.flag
+        FROM
+            tbl_menu m
+                INNER JOIN tbl_role_menu rm ON m.menu_id = rm.menu_id
+        WHERE
+                rm.role_id IN (
+                SELECT
+                    ur.role_id
+                FROM
+                    tbl_user u
+                        INNER JOIN tbl_user_role ur ON ur.user_id = u.user_id
+                WHERE
+                    u.login_name = #{loginName}
+            )ORDER BY menu_id
+    </select>
+
+</mapper>
+

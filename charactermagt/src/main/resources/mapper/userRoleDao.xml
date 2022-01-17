@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yun.dao.UserRoleDao">
+    <delete id="deleteBatch" parameterType="list">
+        delete  from tbl_user_role  where user_id  in
+        <foreach collection="myList" item="xxx" open="(" close=")" separator=",">
+            #{xxx}
+        </foreach>
+    </delete>
+</mapper>
+

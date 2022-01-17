@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>首页</title>
+    <link rel="stylesheet" href="/layui/css/layui.css">
+    <script src="/layui/layui.js"></script>
+</head>
+<body>
+<!--条件查询-->
+<form class="layui-form" style="margin-top: 10px;margin-left: 10px">
+    登录名：
+    <div class="layui-inline">
+        <input class="layui-input" name="loginName" placeholder="登录名" autocomplete="off">
+    </div>
+    方法名：
+    <div class="layui-inline">
+        <input class="layui-input" name="methodName" placeholder="方法名" autocomplete="off">
+    </div>
+    操作时间：
+    <div class="layui-inline">
+        <input class="layui-input"  name="createTime" type="date" autocomplete="off">
+    </div>
+    <button class="layui-btn" lay-submit lay-filter="selectConditionFilter" data-type="reload">搜索</button>
+    <button class="layui-btn layui-btn-primary" type="reset" id="resetButton">重置</button>
+</form>
+
+<table id="demo" lay-filter="test"></table>
+</body>
+<script>
+    layui.use(['table','jquery','form'],function(){
+        var table = layui.table;
+        var form = layui.form;
+        var $ = layui.jquery;
+        let logtable=table.render({
+            elem: '#demo'
+            ,height: 500
+            ,url: '/log/showLog' //数据接口
+            ,page: true //开启分页
+            ,limit:10
+            ,limits:[5,10,15,20,25,30,50,100]
+            ,cols: [
+                [ //表头
+                    {field: 'id', title: 'ID', width:80, sort: true, fixed: 'left'}
+                    ,{field: 'loginName', title: '登录名', width:120,sort: true}
+                    ,{field: 'userName', title: '用户名 ', width:120}
+                    ,{field: 'ip', title: 'IP地址', width:170}
+                    ,{field: 'className', title: '类名', width:100}
+                    ,{field: 'methodName', title: '方法名', width:100}
+                    ,{field: 'params', title: '参数', width:100}
+                    ,{field: 'createTime', title: '创建时间', width:100}
+                ]
+            ]
+        });
+
+        //===================================条件查询==================================================
+        form.on('submit(selectConditionFilter)', function (data) {
+            console.log(data.field) //当前容器的全部表单字段，名值对形式：{name: value}
+            logtable.reload({
+                where: { //设定异步数据接口的额外参数，任意设
+                    loginName: data.field.loginName
+                    ,methodName: data.field.methodName
+                   , createTime: data.field.createTime
+                    //…
+                }
+                , page: {
+                    curr: 1 //重新从第 1 页开始
+                }
+            });
+            return false; //阻止表单跳转。如果需要表单跳转，去掉这段即可。
+        });
+
+        $("#resetButton").click(function () {
+            logtable.reload({
+                where: { //设定异步数据接口的额外参数，任意设
+                    loginName: ""
+                    , methodName: ""
+                   ,createTime: ""
+                    //…
+                }
+                , page: {
+                    curr: 1 //重新从第 1 页开始
+                }
+            });
+        })
+    });
+</script>
+
+</html>
