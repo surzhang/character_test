@@ -31,7 +31,7 @@ public class SwaggerConfig {
                         .title("zyk的API接口")
                         .description("性格测试swagger")
                         .version("2.8.0")
-                        .contact(new Contact("张艳坤","http://localhost:8080","43827349@qq.com"))
+                        .contact(new Contact("张艳坤","http://localhost:8080","438277349@qq.com"))
                         .build());
     }
 }
